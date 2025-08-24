@@ -1,0 +1,30 @@
+# 模型配置文件示例
+# 复制此文件为 models.yaml 并填入实际配置
+
+models:
+  # 火山云DeepSeek模型
+  deepseek:
+    api_base: "https://ark.cn-beijing.volces.com/api/v3"
+    api_key: "your_deepseek_api_key_here"  # 替换为实际的API密钥
+    model_name: "your-model-endpoint-id"   # 替换为实际的模型ID
+    
+  # OpenAI GPT-4模型
+  gpt4:
+    api_base: "https://api.openai.com/v1"
+    api_key: "your_openai_api_key_here"    # 替换为实际的API密钥
+    model_name: "gpt-4"
+
+  # Claude模型
+  claude:
+    api_base: "https://api.anthropic.com/v1"
+    api_key: "your_claude_api_key_here"    # 替换为实际的API密钥
+    model_name: "claude-3-sonnet-20240229"
+  
+  # 其他模型...
+  other_model:
+    api_base: "https://api.other.com/v1"
+    api_key: "your_other_model_api_key_here"
+    model_name: "other-model"
+
+# 默认使用的模型
+default_model: "deepseek"
