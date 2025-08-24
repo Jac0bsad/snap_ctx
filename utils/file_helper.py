@@ -91,6 +91,8 @@ class GitignoreParser:
 
     def should_ignore(self, path_str: str, is_dir: bool = False) -> bool:
         """检查路径是否应该被忽略"""
+        if path_str == ".git":
+            return True
         # 检查普通模式
         for pattern in self.patterns:
             if pattern.search(path_str):
@@ -277,6 +279,16 @@ def get_tree_pathlib(
             visited.discard(current_path)
 
     return result
+
+
+def get_file_content(file_path: str) -> str:
+    """获取文件内容"""
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return f.read()
+    except Exception as e:
+        logger.warning("读取文件失败: %s, 错误: %s", file_path, e)
+        return ""
 
 
 def main():
