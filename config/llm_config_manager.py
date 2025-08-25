@@ -1,7 +1,78 @@
 from typing import Dict, List, Optional, NamedTuple, Any
 from pathlib import Path
 import yaml
-import os
+
+
+def init_config():
+    """初始化配置，让用户添加模型配置和选择默认模型"""
+    config_path = Path("config/models.yaml")
+
+    # 确保配置目录存在
+    config_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # 如果配置文件不存在，从示例文件创建
+    if not config_path.exists():
+        example_path = Path("config/models.example.yaml")
+        if example_path.exists():
+            with open(example_path, "r", encoding="utf-8") as f:
+                config_data = yaml.safe_load(f)
+        else:
+            config_data = {"models": {}, "default_model": None}
+    else:
+        with open(config_path, "r", encoding="utf-8") as f:
+            config_data = yaml.safe_load(f)
+
+    print("=== 模型配置初始化 ===")
+
+    # 添加新模型
+    print("\n1. 添加新模型配置")
+    while True:
+        display_name = input("请输入模型显示名称 (直接回车结束添加): ").strip()
+        if not display_name:
+            break
+
+        api_base = input("请输入API地址: ").strip()
+        api_key = input("请输入API密钥: ").strip()
+        model_name = input("请输入模型名称: ").strip()
+
+        config_data["models"][display_name] = {
+            "api_base": api_base,
+            "api_key": api_key,
+            "model_name": model_name,
+        }
+        print(f"✅ 已添加模型: {display_name}")
+
+    # 选择默认模型
+    print("\n2. 选择默认模型")
+    available_models = list(config_data["models"].keys())
+    if available_models:
+        print("可用模型:")
+        for i, model in enumerate(available_models, 1):
+            print(f"  {i}. {model}")
+
+        while True:
+            try:
+                choice = input(f"请选择默认模型 (1-{len(available_models)}): ").strip()
+                if not choice:
+                    break
+                choice_idx = int(choice) - 1
+                if 0 <= choice_idx < len(available_models):
+                    config_data["default_model"] = available_models[choice_idx]
+                    print(f"✅ 已设置默认模型: {available_models[choice_idx]}")
+                    break
+                else:
+                    print("❌ 无效的选择，请重新输入")
+            except ValueError:
+                print("❌ 请输入有效的数字")
+    else:
+        print("⚠️  没有可用的模型，请先添加模型")
+
+    # 保存配置
+    with open(config_path, "w", encoding="utf-8") as f:
+        yaml.dump(config_data, f, allow_unicode=True, sort_keys=False)
+
+    print(f"\n✅ 配置已保存到: {config_path}")
+    print("=== 初始化完成 ===")
 
 
 class LLMModelConfig(NamedTuple):
@@ -35,11 +106,11 @@ class LLMConfigManager:
             Path(__file__).parent.parent / config_path,  # 相对于项目根目录
             Path.cwd() / config_path,  # 相对于当前工作目录
         ]
-        
+
         for path in possible_paths:
             if path.exists():
                 return path
-                
+
         # 如果都找不到，返回默认路径（会在_load_config中报错）
         return Path(config_path)
 

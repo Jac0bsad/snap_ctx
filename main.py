@@ -1,6 +1,7 @@
 import asyncio
 import argparse
 import pyperclip
+from config.llm_config_manager import init_config
 from snap_ctx_mcp import mcp_server, context_saver
 from utils.logger_helper import setup_logger
 from utils.mcp_utils import get_prompt_from_mcp, get_tools_from_mcp
@@ -43,10 +44,24 @@ def main():
     )
     parser.add_argument(
         "query",
+        nargs="?",  # 使query参数变为可选
         help="describe the query",
+    )
+    parser.add_argument(
+        "--init", action="store_true", help="initialize model configuration"
     )
 
     args = parser.parse_args()
+
+    # 处理--init选项
+    if args.init:
+        init_config()
+        return
+
+    # 如果没有提供query参数，显示帮助信息
+    if args.query is None:
+        parser.print_help()
+        return
 
     # 执行主逻辑
     asyncio.run(get_context(args.query))
