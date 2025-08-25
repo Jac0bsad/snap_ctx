@@ -21,7 +21,7 @@ pip install snap_ctx
 2. Run:
 
    ```bash
-   snap_ctx "your prompt"
+   snap_ctx your prompt
    ```
 
 3. Relevant code context is automatically copied to your clipboard
@@ -33,6 +33,8 @@ git clone https://github.com/your_username/snap_ctx.git
 cd snap_ctx
 uv sync
 ```
+
+create models.yaml under `config`
 
 ## License
 
