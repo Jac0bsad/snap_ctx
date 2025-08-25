@@ -12,7 +12,15 @@ A lightweight CLI tool to automatically extract and copy context-aware code snip
 ## Installation
 
 ```bash
-pip install snap_ctx
+git clone https://github.com/Jac0bsad/snap_ctx.git
+cd snap_ctx
+```
+
+create models.yaml under `config/`
+
+```bash
+uv build
+uv tool install dist/snap_ctx-0.1.0-py3-none-any.whl
 ```
 
 ## Basic Usage
@@ -21,20 +29,10 @@ pip install snap_ctx
 2. Run:
 
    ```bash
-   snap_ctx your prompt
+   snap_ctx <your prompt>
    ```
 
 3. Relevant code context is automatically copied to your clipboard
-
-## Development Setup
-
-```bash
-git clone https://github.com/your_username/snap_ctx.git
-cd snap_ctx
-uv sync
-```
-
-create models.yaml under `config`
 
 ## License
 
