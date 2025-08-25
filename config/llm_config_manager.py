@@ -1,6 +1,7 @@
 from typing import Dict, List, Optional, NamedTuple, Any
 from pathlib import Path
 import yaml
+import os
 
 
 class LLMModelConfig(NamedTuple):
@@ -21,9 +22,26 @@ class LLMConfigManager:
         Args:
             config_path: 配置文件路径，相对于项目根目录
         """
-        self.config_path = Path(config_path)
+        self.config_path = self._find_config_file(config_path)
         self._config_cache: dict = None
         self._load_config()
+
+    def _find_config_file(self, config_path: str) -> Path:
+        """查找配置文件的实际位置"""
+        # 尝试多个可能的位置
+        possible_paths = [
+            Path(config_path),  # 相对于当前目录
+            Path(__file__).parent / "models.yaml",  # 相对于此模块所在目录
+            Path(__file__).parent.parent / config_path,  # 相对于项目根目录
+            Path.cwd() / config_path,  # 相对于当前工作目录
+        ]
+        
+        for path in possible_paths:
+            if path.exists():
+                return path
+                
+        # 如果都找不到，返回默认路径（会在_load_config中报错）
+        return Path(config_path)
 
     def _load_config(self) -> None:
         """加载配置文件"""
